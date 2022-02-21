@@ -332,7 +332,8 @@ internal struct SecureDFUResponse {
             case .selectObject:
                 // Max size for a command object is usually around 256. Let's say 1024,
                 // just to be sure. This is only for logging, so may be wrong.
-                return String(format: "\(maxSize! > 1024 ? "Data" : "Command") object selected (Max size = \(maxSize!), Offset = \(offset!), CRC = %08X)", crc!)
+                let maxSize = maxSize ?? 0
+                return String(format: "\(maxSize > 1024 ? "Data" : "Command") object selected (Max size = \(maxSize), Offset = \(offset!), CRC = %08X)", crc!)
             case .calculateChecksum:
                 return String(format: "Checksum (Offset = \(offset!), CRC = %08X)", crc!)
             default:
