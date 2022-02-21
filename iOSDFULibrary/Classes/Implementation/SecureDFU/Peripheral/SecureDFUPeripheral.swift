@@ -163,15 +163,15 @@ internal class SecureDFUPeripheral : BaseCommonDFUPeripheral<SecureDFUExecutor, 
         dfuService?.selectDataObject(
             onReponse: { [weak self] response in
                 guard let self = self else { return }
-                guard response.maxSize! > 0 else {
+                guard let maxSize = response.maxSize, let offset = response.offset, let crc = response.crc, maxSize > 0 else {
                     self.logger.e("Invalid Data Object Max size = 0 received (expected > 0, typically 4096 bytes)")
                     self.delegate?.error(.unsupportedResponse,
                                          didOccurWithMessage: "Received max object size = 0, expected 4096")
                     return
                 }
-                self.delegate?.peripheralDidSendDataObjectInfo(maxLen: response.maxSize!,
-                                                               offset: response.offset!,
-                                                               crc: response.crc!)
+                self.delegate?.peripheralDidSendDataObjectInfo(maxLen: maxSize,
+                                                               offset: offset,
+                                                               crc: crc)
             },
             onError: defaultErrorCallback
         )
@@ -185,15 +185,15 @@ internal class SecureDFUPeripheral : BaseCommonDFUPeripheral<SecureDFUExecutor, 
         dfuService?.selectCommandObject(
             onReponse: { [weak self] response in
                 guard let self = self else { return }
-                guard response.maxSize! > 0 else {
+                guard let maxSize = response.maxSize, let offset = response.offset, let crc = response.crc, maxSize > 0 else {
                     self.logger.e("Invalid Command Object Max size = 0 received (expected > 0, typically 256 bytes)")
                     self.delegate?.error(.unsupportedResponse,
                                          didOccurWithMessage: "Received max object size = 0, expected 256")
                     return
                 }
-                self.delegate?.peripheralDidSendCommandObjectInfo(maxLen: response.maxSize!,
-                                                                  offset: response.offset!,
-                                                                  crc: response.crc!)
+                self.delegate?.peripheralDidSendCommandObjectInfo(maxLen: maxSize,
+                                                                  offset: offset,
+                                                                  crc: crc)
             },
             onError: defaultErrorCallback
         )
