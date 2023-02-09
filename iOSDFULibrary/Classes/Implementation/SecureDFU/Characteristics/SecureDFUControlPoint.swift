@@ -373,11 +373,17 @@ extension SecureDFUResponse : CustomStringConvertible {
         case .success:
             switch requestOpCode {
             case .selectObject:
+                guard let maxSize = maxSize, let offset = offset, let crc = crc else {
+                    break
+                }
                 // Max size for a command object is usually around 256. Let's say 1024,
                 // just to be sure. This is only for logging, so may be wrong.
-                return String(format: "\(maxSize! > 1024 ? "Data" : "Command") object selected (Max size = \(maxSize!), Offset = \(offset!), CRC = %08X)", crc!)
+                return String(format: "\(maxSize > 1024 ? "Data" : "Command") object selected (Max size = \(maxSize), Offset = \(offset), CRC = %08X)", crc)
             case .calculateChecksum:
-                return String(format: "Checksum (Offset = \(offset!), CRC = %08X)", crc!)
+                guard let offset = offset, let crc = crc else {
+                    break
+                }
+                return String(format: "Checksum (Offset = \(offset), CRC = %08X)", crc)
             default:
                 // Other responses are either not logged, or logged by the service or executor,
                 // so this 'default' should never be called.
